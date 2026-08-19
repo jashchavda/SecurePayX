@@ -1,3 +1,51 @@
 spring:
+  config:
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:../.env[.properties]
   application:
     name: fraud-detection-service
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    consumer:
+      group-id: fraud-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+            use:
+              type:
+                headers: false
+            value:
+              default:
+                type: java.util.HashMap
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+
+server:
+  port: 8084
+
+# Account Service url for feign client
+account:
+  service:
+    url: ${ACCOUNT_SERVICE_URL}
+
+fraud:
+  max-transactions-per-minute: ${FRAUD_MAX_TRANSACTIONS_PER_MINUTE:5}
+  suspicious-amount-multiplier: ${FRAUD_SUSPICIOUS_AMOUNT_MULTIPLIER:5}
+  max-balance-percentage: ${FRAUD_MAX_BALANCE_PERCENTAGE:0.90}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
