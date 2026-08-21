@@ -38,9 +38,8 @@ public class AccountController {
         return ResponseEntity.ok(accountService.getAccount(accountNumber));
     }
 
-    @GetMapping("/{accountNumber}/balance ")
-    public ResponseEntity<AccountResponse> getBalance(@PathVariable String accountNumber) {
-
+    @GetMapping("/{accountNumber}/balance")
+    public ResponseEntity<BigDecimal> getBalance(@PathVariable String accountNumber) {
         return ResponseEntity.ok(accountService.getBalance(accountNumber));
     }
 
@@ -71,6 +70,8 @@ public class AccountController {
     * 2. Transaction completed -> Credit receiver
     */
 
+
+    /* here in credit balance two diffrerent task gets handled 1. credit the receiver and 2. refund the sender if anything detected */
     @PutMapping("/{accountNumber}/credit")
     public ResponseEntity<String> creditBalance(
             @PathVariable String accountNumber,
